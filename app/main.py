@@ -9,8 +9,8 @@ def main():
             case "exit": break;
             case "echo": print(command.replace('echo ','',1))
             case "type":
-                match command.split(' '[1]):
-                    case "exit" | "echo" | "type": print(f"{command.split(' '[1])} is a shell builtin")
+                match command.split(' ')[1]:
+                    case "exit" | "echo" | "type": print(f"{command.split(' ')[1]} is a shell builtin")
                     case _: print(f"{command}: not found")
             case _: print(f"{command}: command not found")
 
