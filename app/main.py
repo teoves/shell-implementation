@@ -7,7 +7,7 @@ def main():
         command = input()
         match command.split(' ')[0]:
             case "exit": break;
-            case "echo": print(command)
+            case "echo": print(command.replace('echo ','',1))
             case _: print(f"{command}: command not found")
 
 
