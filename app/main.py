@@ -5,8 +5,10 @@ def main():
     while(True):
         sys.stdout.write("$ ")
         command = input()
-        if command == "exit":
-            break;
+        match command:
+            case "exit": break;
+            case "echo": print(command)
+
         print(f"{command}: command not found")
 
 
