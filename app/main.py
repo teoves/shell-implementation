@@ -8,8 +8,7 @@ def main():
         match command:
             case "exit": break;
             case "echo": print(command)
-
-        print(f"{command}: command not found")
+            case _: print(f"{command}: command not found")
 
 
 if __name__ == "__main__":
