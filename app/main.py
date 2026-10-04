@@ -25,9 +25,9 @@ def main():
 
         # parse input char-wise to apply quoting and escaping rules
         # by keeping track of the following states
-        sq = False #single quotes
-        dq = False #double quotes
-        nl = False #next literal
+        sq = False # single quotes are active
+        dq = False # double quotes are active
+        nl = False # next literal (treat next character as literal because of a backslash)
         for char in user_input:
             if nl:
                 if dq and char not in '"\\$`':
@@ -84,7 +84,7 @@ def main():
                 else:
                     err = f
 
-        #handle command logic    
+        # handle command logic    
         command = params[0]  
 
         match command:
@@ -117,7 +117,7 @@ def main():
                 except OSError:
                     print(f"cd: {target}: No such file or directory", file=err)
             case _: 
-                #handles execution of commands that are not builtins
+                # handles execution of commands that are not builtins
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params, stdout=out, stderr=err)
                 else:
@@ -129,7 +129,7 @@ def main():
         if err is not sys.stderr:
             err.close()
 
-# function to search PATH for commands that are not builtexiins
+# helper function to search PATH for commands that are not builtins
 def find_exec(command):
     for dir in  os.environ.get("PATH","").split(os.pathsep):
         full_path = os.path.join(dir,command)
