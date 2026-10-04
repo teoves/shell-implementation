@@ -85,7 +85,7 @@ def main():
             params = params[:i]
 
         if err_file:
-            err = open(out_file, "w")
+            err = open(err_file, "w")
         else:
             err = sys.stderr
             
@@ -126,7 +126,7 @@ def main():
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params, stdout=out)
                 else:
-                    print(f"{command}: command not found", file=err)
+                    print(f"{command}: command not found", file=err, stderr=err)
         
         if out is not sys.stdout:
             out.close()
