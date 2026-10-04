@@ -33,7 +33,7 @@ def main():
         if params[-1] == "" and len(params) > 1:
             params.pop()
 
-        print(params)
+
         command = params[0]
 
         match command:
