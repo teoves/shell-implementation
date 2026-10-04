@@ -22,7 +22,7 @@ def main():
                     for dir in  os.environ.get("PATH","").split(os.pathsep):
                         full_path = os.path.join(dir,params[1])
                         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                            print(f"{params[1]} is {dir}")
+                            print(f"{params[1]} is {full_path}")
                             isFound = True
                             break;
                         
