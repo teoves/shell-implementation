@@ -8,18 +8,23 @@ def main():
     while(True):
 
         sys.stdout.write("$ ")
-        user_input = input()
+        try:
+            user_input = input()
+        except EOFError:
+            break
         params = [""]
 
-        #implement single quoting
+        #parse input char-wise to apply quoting and escaping rules
         sq = False #single quotes
         dq = False #double quotes
         nl = False #next literal
         for char in user_input:
             if nl:
-                params[-1]+=char
+                if dq and char not in '"\\$`':
+                    params[-1] += "\\"      # backslash wasn't special here, keep it
+                params[-1] += char
                 nl = False
-                continue;
+                continue
             
             if char =="\\" and not sq:
                 nl = True
@@ -51,6 +56,10 @@ def main():
 
         if params[-1] == "" and len(params) > 1:
             params.pop()
+
+        #preempt empty input
+        if not params[0]:
+            continue
             
         command = params[0]
 
@@ -58,25 +67,34 @@ def main():
             case "exit": break;
             case "echo": print(" ".join(params[1:]))
             case "type":
-                if params[1] in BUILTINS:
-                    print(f"{params[1]} is a shell builtin")
+                try:
+                    prog = params[1]
+                except IndexError:
+                    print(f"{command}: no argument provided")
+                    continue
+                if prog in BUILTINS:
+                    print(f"{prog} is a shell builtin")
                 elif(full_path := find_exec(params[1])):
-                    print(f"{params[1]} is {full_path}")
+                    print(f"{prog} is {full_path}")
                 else:
-                    print(f"{params[1]}: not found")
+                    print(f"{prog}: not found")
+    
             case "pwd":
                 print(os.getcwd())
             case "cd":
-                target = params[1]
+                try:
+                    target = params[1]
+                except IndexError:
+                    print(f"{command}: no directory provided")
+                    continue
                 try:
                     os.chdir(target)
                 except OSError:
                     print(f"cd: {target}: No such file or directory")
             case _: 
+                #handles execution of external commands
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params)
-                    #in case of 'clear' do it again to fully clear it should display something
-                    if params[0] == "clear": subprocess.run(params)
                 else:
                     print(f"{command}: command not found")
 
