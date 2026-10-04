@@ -106,7 +106,7 @@ def main():
                 if prog in BUILTINS:
                     print(f"{prog} is a shell builtin", file=out)
                 elif(full_path := find_exec(params[1])):
-                    print(f"{prog} is {full_path}, file=out")
+                    print(f"{prog} is {full_path}", file=out)
                 else:
                     print(f"{prog}: not found", file=err)
             case "pwd": # print working directory
