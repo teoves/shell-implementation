@@ -62,6 +62,20 @@ def main():
         # preempt empty input
         if not params[0]:
             continue
+
+        #redirect to file if 1> or >
+        out_file = None
+        pipe = [">","1>"]
+        for op in pipe:
+            if op in params:
+                i = params.index(op)
+                out_file = params[i+1]
+                params = params[:i]
+
+        if out_file:
+            out = open(out_file,"w")
+        else:
+            out = sys.stdout
             
         command = params[0]
 
@@ -70,7 +84,7 @@ def main():
             case "exit": # exits 
                 break;
             case "echo": # prints
-                print(" ".join(params[1:]))
+                print(" ".join(params[1:]), file=out)
             case "type": # check if a command is builtin, external or not in PATH
                 try:
                     prog = params[1]
@@ -101,6 +115,9 @@ def main():
                     subprocess.run(params)
                 else:
                     print(f"{command}: command not found")
+        
+        if out is not sys.stdout:
+            out.close()
 
 # function to search PATH for commands that are not builtins
 def find_exec(command):
