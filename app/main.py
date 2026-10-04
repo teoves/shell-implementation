@@ -12,10 +12,21 @@ def main():
         params = [""]
 
         #implement single quoting
-        sq = False
-        dq = False
+        sq = False #single quotes
+        dq = False #double quotes
+        nl = False #next literal
         for char in user_input:
-            if char == "\"":
+            if nl:
+                params[-1]+=char
+                continue;
+            
+            if char =="\\":
+                nl = True
+                continue;
+            else:
+                nl = False
+
+            if char == "\"" and not sq:
                 dq = not dq
                 continue
 
