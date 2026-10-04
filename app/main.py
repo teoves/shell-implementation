@@ -22,10 +22,13 @@ def main():
                     print(f"{params[1]} is {full_path}")
                 else:
                     print(f"{params[1]}: not found")
-
+            case "pwd":
+                print(os.getcwd())
             case _: 
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params)
+                    #in case of 'clear' do it again to fully clear it should display something
+                    if params[0] == "clear": subprocess.run(params)
                 else:
                     print(f"{command}: command not found")
 
