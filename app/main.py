@@ -21,7 +21,7 @@ def main():
                 nl = False
                 continue;
             
-            if char =="\\":
+            if char =="\\" and not sq:
                 nl = True
                 continue;
             else:
