@@ -13,17 +13,24 @@ def main():
 
         #implement single quoting
         sq = False
+        dq = False
         for char in user_input:
-            if char == "'":
-                sq = not(sq)
+            if char == "\"":
+                dq = not dq
                 continue
 
-            if sq:
+            if char == "'" and not dq:
+                sq = not sq
+                continue
+
+            if sq or dq:
                 params[-1]+=char
             else:
+                #handle special chars
                 #expand tilde
                 if char == "~" and params[-1]=="":
                     params[-1] += os.path.expanduser("~")
+
                 elif char == " ":
                     if params[-1]:
                         params.append("")
@@ -32,8 +39,7 @@ def main():
 
         if params[-1] == "" and len(params) > 1:
             params.pop()
-
-
+            
         command = params[0]
 
         match command:
