@@ -15,8 +15,10 @@ def main():
         match command:
             case "exit": break;
             case "echo": print(user_input.replace('echo ','',1))
-            case "type": 
-                if(full_path := find_exec(params[1])):
+            case "type":
+                if params[1] in BUILTINS:
+                    print(f"{params[1]} is a shell builtin")
+                elif(full_path := find_exec(params[1])):
                     print(f"{params[1]} is {full_path}")
                 else:
                     print(f"{params[1]}: not found")
