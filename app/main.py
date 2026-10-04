@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-BUILTINS = ["exit", "echo", "type", "pwd"]
+BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
 
 def main():
     while(True):
@@ -25,10 +25,11 @@ def main():
             case "pwd":
                 print(os.getcwd())
             case "cd":
+                target = os.path.expanduser(params[1])
                 try:
-                    os.chdir(params[1])
+                    os.chdir(target)
                 except OSError:
-                    print(f"cd: {params[1]}: No such file or directory")
+                    print(f"cd: {target}: No such file or directory")
             case _: 
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params)
