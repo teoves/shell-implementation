@@ -112,7 +112,7 @@ def main():
             case _: 
                 #handles execution of commands that are not builtins
                 if(full_path := find_exec(params[0])):
-                    subprocess.run(params)
+                    subprocess.run(params, stdout=out)
                 else:
                     print(f"{command}: command not found")
         
