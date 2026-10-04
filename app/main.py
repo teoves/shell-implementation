@@ -4,6 +4,15 @@ import subprocess
 
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
 
+REDIRECTS = {
+    ">":   ("out", "w"),
+    "1>":  ("out", "w"),
+    ">>":  ("out", "a"),
+    "1>>": ("out", "a"),
+    "2>":  ("err", "w"),
+    "2>>": ("err", "a"),
+}
+
 def main():
     while(True):
 
@@ -63,31 +72,17 @@ def main():
         if not params[0]:
             continue
 
-        #redirect to file if 1> or >
-        out_file = None
-        pipe = [">","1>"]
-        for op in pipe:
+        # handle redirects
+        out, err = sys.stdout, sys.stderr
+        for op, (stream, mode) in REDIRECTS.items():
             if op in params:
                 i = params.index(op)
-                out_file = params[i+1]
-                params = params[:i]
-
-        if out_file:
-            out = open(out_file, "w")
-        else:
-            out = sys.stdout
-
-        # redirect to standard error
-        err_file = None
-        if "2>" in params:
-            i = params.index("2>")
-            err_file = params[i+1]
-            params = params[:i]
-
-        if err_file:
-            err = open(err_file, "w")
-        else:
-            err = sys.stderr
+                f = open(params[i + 1], mode)
+                params = params[:i] + params[i + 2:]
+                if stream == "out":
+                    out = f
+                else:
+                    err = f
             
         command = params[0]
 
