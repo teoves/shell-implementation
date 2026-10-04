@@ -24,6 +24,11 @@ def main():
                     print(f"{params[1]}: not found")
             case "pwd":
                 print(os.getcwd())
+            case "cd":
+                try:
+                    os.chdir(params[1])
+                except OSError:
+                    print(f"cd: {params[1]}: No such file or directory")
             case _: 
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params)
