@@ -83,10 +83,10 @@ def main():
                     out = f
                 else:
                     err = f
-            
-        command = params[0]
 
-        #handle command logic
+        #handle command logic    
+        command = params[0]  
+
         match command:
             case "exit": # exits 
                 break;
@@ -122,7 +122,8 @@ def main():
                     subprocess.run(params, stdout=out, stderr=err)
                 else:
                     print(f"{command}: command not found", file=err)
-        
+
+        # close out files that were opened for redirects if any
         if out is not sys.stdout:
             out.close()
         if err is not sys.stderr:
