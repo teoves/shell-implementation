@@ -73,9 +73,21 @@ def main():
                 params = params[:i]
 
         if out_file:
-            out = open(out_file,"w")
+            out = open(out_file, "w")
         else:
             out = sys.stdout
+
+        # redirect to standard error
+        err_file = None
+        if "2>" in params:
+            i = params.index("2>")
+            err_file = params[i+1]
+            params = params[:i]
+
+        if err_file:
+            err = open(out_file, "w")
+        else:
+            err = sys.stderr
             
         command = params[0]
 
@@ -89,37 +101,39 @@ def main():
                 try:
                     prog = params[1]
                 except IndexError:
-                    print(f"{command}: no argument provided")
+                    print(f"{command}: no argument provided", file=err)
                     continue
                 if prog in BUILTINS:
-                    print(f"{prog} is a shell builtin")
+                    print(f"{prog} is a shell builtin", file=out)
                 elif(full_path := find_exec(params[1])):
                     print(f"{prog} is {full_path}")
                 else:
-                    print(f"{prog}: not found")
+                    print(f"{prog}: not found", file=err)
             case "pwd": # print working directory
                 print(os.getcwd())
             case "cd": # change directory
                 try:
                     target = params[1]
                 except IndexError:
-                    print(f"{command}: no directory provided")
+                    print(f"{command}: no directory provided", file=err)
                     continue
                 try:
                     os.chdir(target)
                 except OSError:
-                    print(f"cd: {target}: No such file or directory")
+                    print(f"cd: {target}: No such file or directory", file=err)
             case _: 
                 #handles execution of commands that are not builtins
                 if(full_path := find_exec(params[0])):
                     subprocess.run(params, stdout=out)
                 else:
-                    print(f"{command}: command not found")
+                    print(f"{command}: command not found", file=err)
         
         if out is not sys.stdout:
             out.close()
+        if err is not sys.stderr:
+            err.close()
 
-# function to search PATH for commands that are not builtins
+# function to search PATH for commands that are not builtexiins
 def find_exec(command):
     for dir in  os.environ.get("PATH","").split(os.pathsep):
         full_path = os.path.join(dir,command)
