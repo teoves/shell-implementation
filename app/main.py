@@ -106,11 +106,11 @@ def main():
                 if prog in BUILTINS:
                     print(f"{prog} is a shell builtin", file=out)
                 elif(full_path := find_exec(params[1])):
-                    print(f"{prog} is {full_path}")
+                    print(f"{prog} is {full_path}, file=out")
                 else:
                     print(f"{prog}: not found", file=err)
             case "pwd": # print working directory
-                print(os.getcwd())
+                print(os.getcwd(), file=out)
             case "cd": # change directory
                 try:
                     target = params[1]
@@ -124,9 +124,9 @@ def main():
             case _: 
                 #handles execution of commands that are not builtins
                 if(full_path := find_exec(params[0])):
-                    subprocess.run(params, stdout=out)
+                    subprocess.run(params, stdout=out, stderr=err)
                 else:
-                    print(f"{command}: command not found", file=err, stderr=err)
+                    print(f"{command}: command not found", file=err)
         
         if out is not sys.stdout:
             out.close()
