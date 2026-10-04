@@ -19,7 +19,7 @@ def main():
                 if(full_path := find_exec(params[1])):
                     print(f"{params[1]} is {full_path}")
                 else:
-                    print(f"{command}: command not found")
+                    print(f"{params[1]}: command not found")
 
             case _: 
                 if(full_path := find_exec(params[0])):
