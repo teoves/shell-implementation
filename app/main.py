@@ -18,6 +18,7 @@ def main():
         for char in user_input:
             if nl:
                 params[-1]+=char
+                nl = False
                 continue;
             
             if char =="\\":
