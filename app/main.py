@@ -13,6 +13,18 @@ REDIRECTS = {
     "2>>": ("err", "a"),
 }
 
+import readline
+
+def completer(text, state):
+    matches = [name + " " for name in BUILTINS if name.startswith(text)]
+    return matches[state] if state < len(matches) else None
+
+readline.set_completer(completer)
+if "libedit" in (readline.__doc__ or ""):
+    readline.parse_and_bind("bind ^I rl_complete")   # macOS
+else:
+    readline.parse_and_bind("tab: complete")         # GNU
+
 def main():
     while(True):
 
