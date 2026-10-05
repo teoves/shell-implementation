@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import readline
 
 BUILTINS = ["exit", "echo", "type", "pwd", "cd"]
 
@@ -13,10 +14,27 @@ REDIRECTS = {
     "2>>": ("err", "a"),
 }
 
-import readline
+# index all executables
+def path_execs():
+    names = set()
+    for dir in os.environ.get("PATH","").split(os.pathsep):
+        try:
+            entries = os.listdir(dir)
+        except OSError:
+            continue
+        for name in entries:
+            full_path = os.path.join(dir,name)
+            if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                names.add(name)
+    return names
+
+matches = []
 
 def completer(text, state):
-    matches = [name + " " for name in BUILTINS if name.startswith(text)]
+    global matches
+    if state == 0: # first call for this Tab press
+        names = set(BUILTINS) | path_execs()
+        matches = sorted(name + " " for name in names if name.startswith(text))
     return matches[state] if state < len(matches) else None
 
 readline.set_completer(completer)
@@ -28,9 +46,8 @@ else:
 def main():
     while(True):
 
-        sys.stdout.write("$ ")
         try:
-            user_input = input()
+            user_input = input("$ ")
         except EOFError:
             break
         params = [""]
